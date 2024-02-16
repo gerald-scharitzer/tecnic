@@ -11,10 +11,11 @@ type SemVer struct {
 	Minor      int
 	Patch      int
 	PreRelease string
+	Build      string
 }
 
 func Version() SemVer {
-	return SemVer{Major: 0, Minor: 0, Patch: 0, PreRelease: ""}
+	return SemVer{Major: 0, Minor: 0, Patch: 0, PreRelease: "", Build: ""}
 }
 
 // Implements the Stringer interface
@@ -28,6 +29,10 @@ func (version *SemVer) String() string {
 	if len(version.PreRelease) > 0 {
 		builder.WriteRune('-')
 		builder.WriteString(version.PreRelease)
+	}
+	if len(version.Build) > 0 {
+		builder.WriteRune('+')
+		builder.WriteString(version.Build)
 	}
 	return builder.String()
 }
