@@ -7,7 +7,7 @@ import (
 )
 
 func TestVersion(t *testing.T) {
-	want := "0.1.0-alpha.0"
+	want := "0.1.0"
 	version := Version()
 	assert.Equal(t, want, version.String())
 }
