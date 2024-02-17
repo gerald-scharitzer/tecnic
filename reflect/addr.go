@@ -9,16 +9,13 @@ package reflect
 //	v := value
 //	a := &v
 //
-// This is for constant and literal values,
-// because the [address operator](https://go.dev/ref/spec#Address_operators)
-// is defined for addressable operands only.
+// This is for constant and literal values, because the [address operator] is defined for addressable operands only.
 //
 //	func f(number *int) {
 //	  fmt.Println(*number)
 //	}
 //
-// There is no automatic boxing in Go,
-// so function arguments are not referenced automatically.
+// There is no automatic boxing in Go, so function arguments are not referenced automatically.
 //
 //	const c = 42
 //	// f(c) // error: cannot use c (untyped int constant 42) as *int value in argument to f compiler(IncompatibleAssign)
@@ -43,6 +40,8 @@ package reflect
 //
 // The argument is passed by value, so the address of the copy is returned instead of the original argument.
 // The memory is allocated implicitly through pass by value.
+//
+// [address operator]: https://go.dev/ref/spec#Address_operators
 func Addr[T any](x T) *T {
 	return &x
 }

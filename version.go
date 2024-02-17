@@ -14,8 +14,9 @@ type SemVer struct {
 	Build      string
 }
 
+// The semantic version of this module
 func Version() SemVer {
-	return SemVer{Major: 0, Minor: 0, Patch: 0, PreRelease: "", Build: ""}
+	return SemVer{Major: 0, Minor: 1, Patch: 0, PreRelease: "alpha.0", Build: ""}
 }
 
 // Implements the Stringer interface

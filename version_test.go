@@ -6,6 +6,12 @@ import (
 	"gotest.tools/v3/assert"
 )
 
+func TestVersion(t *testing.T) {
+	want := "0.1.0-alpha.0"
+	version := Version()
+	assert.Equal(t, want, version.String())
+}
+
 func TestVersionString(t *testing.T) {
 	tests := []struct {
 		want    string

@@ -16,7 +16,7 @@ Use the library by importing the module's packages with
 
 ```go
 import (
-    em "gopkg.in/gerald-scharitzer/tecnic.v0/pkg"
+    tp "gopkg.in/gerald-scharitzer/tecnic.v0/pkg"
 )
 ```
 
@@ -30,7 +30,7 @@ with Git and Go.
 
 1. Get with `git clone https://github.com/gerald-scharitzer/tecnic.git`
 2. Enter with `cd tecnic`
-3. Increase version in [doc.go#Version](doc.go#Version)
+3. Increase version in [version.go#Version](version.go#Version) and [version_test.go#TestVersion](version_test.go#TestVersion)
 4. Test with `go test ./...`
 5. Check with `go vet ./...`
 6. Build with `go build ./...`
@@ -38,8 +38,8 @@ with Git and Go.
 8. Push with `git push origin semver`
 9. Publish with `GOPROXY=proxy.golang.org go list -m gopkg.in/gerald-scharitzer/tecnic.vn@semver`
 
-where `semver` is the [semantic version](https://semver.org/spec/v2.0.0.html) (e.g. v0.0.0)
-and `vn` is the major version number (e.g. v0)
+where `semver` is `v` followed by the [semantic version](https://semver.org/spec/v2.0.0.html) (e.g. `v0.0.0`)
+and `vn` is `v` followed by the major version number (e.g. `v0`)
 
 ## Rules
 
