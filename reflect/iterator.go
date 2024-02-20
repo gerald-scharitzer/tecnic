@@ -1,7 +1,8 @@
 package reflect
 
-// Returns the next element in the iterator and a boolean indicating if there was one.
+// Wrap a sequence of elements of type T in an iterator.
 type Iterator[T any] interface {
+	// Returns the next element and a boolean indicating if there was one.
 	Next() (*T, bool)
 }
 
