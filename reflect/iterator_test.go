@@ -27,6 +27,14 @@ type mapIterator[K comparable, V any] struct {
 	iterator *reflect.MapIter
 }
 
+// This is just to test the iterator interface with channels.
+// Channels can already be iterated over with a for range loop.
+type channelIterator[T any] struct {
+	// The channel must be readable and the iterator must not write to the channel.
+	// TODO test with both read-only and read-write channels
+	channel *<-chan T
+}
+
 func newArrayIterator[T any](array *[]T) *arrayIterator[T] {
 	return &arrayIterator[T]{array: array, index: 0}
 }
@@ -40,6 +48,11 @@ func newMapIterator[K comparable, V any](mapPointer *map[K]V) *mapIterator[K, V]
 	mapValue := reflect.ValueOf(*mapPointer)
 	iterator := mapValue.MapRange()
 	return &mapIterator[K, V]{iterator: iterator}
+}
+
+func newChannelIterator[T any](channel *chan T) *channelIterator[T] {
+	receiver := (<-chan T)(*channel)
+	return &channelIterator[T]{channel: &receiver}
 }
 
 // Implements Iterator
@@ -71,6 +84,12 @@ func (iter *mapIterator[K, V]) Next() (*K, *V, bool) { // FIXME interface is not
 		return &key, &value, true
 	}
 	return nil, nil, false
+}
+
+// Implements Iterator
+func (iter *channelIterator[T]) Next() (*T, bool) {
+	value, ok := <-*iter.channel
+	return &value, ok
 }
 
 func TestArrayIterator(t *testing.T) {
@@ -123,7 +142,7 @@ func TestMapIterator(t *testing.T) {
 	for key, want := range m {
 		k, v, ok := iter.Next()
 		assert.Assert(t, ok)
-		assert.Equal(t, *k, key)
+		assert.Equal(t, *k, key) // FIXME there is no guarantee that the order will be the same
 		assert.Equal(t, *v, want)
 	}
 	_, _, ok := iter.Next()
@@ -133,5 +152,39 @@ func TestMapIterator(t *testing.T) {
 	iter = newMapIterator(&m)
 	for k, v, ok := iter.Next(); ok; k, v, ok = iter.Next() {
 		assert.Equal(t, m[*k], *v)
+	}
+}
+
+func TestChannelIterator(t *testing.T) {
+	ch := make(chan int, 3)
+	ch <- 0
+	ch <- 1
+	ch <- 2
+	close(ch)
+
+	// test with for clause
+	iter := newChannelIterator(&ch)
+	for want := 0; want <= 2; want++ {
+		value, ok := iter.Next()
+		assert.Assert(t, ok)
+		assert.Equal(t, *value, want)
+	}
+	_, ok := iter.Next()
+	assert.Assert(t, !ok)
+
+	// re-make channel, because it was closed
+	ch = make(chan int, 3)
+	ch <- 0
+	ch <- 1
+	ch <- 2
+	close(ch)
+
+	// test with for while
+	iter = newChannelIterator(&ch)
+	want := 0
+	for value, ok := iter.Next(); ok; value, ok = iter.Next() {
+		assert.Assert(t, ok)
+		assert.Equal(t, *value, want)
+		want++
 	}
 }
